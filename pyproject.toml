@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "emporio-musica-agent"
+version = "0.1.0"
+description = "Hybrid ReAct & RAG customer support AI agent for Emporio da Musica"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "langchain>=0.2.0",
+    "langchain-core>=0.2.0",
+    "langchain-community>=0.2.0",
+    "langgraph>=0.2.0",
+    "langgraph-checkpoint-sqlite>=1.0.0",
+    "langchain-openai>=0.1.0",
+    "langchain-google-genai>=1.0.0",
+    "sqlalchemy>=2.0.0",
+    "chromadb>=0.5.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.2.0",
+    "pandas>=2.2.0",
+    "streamlit>=1.35.0",
+    "python-dotenv>=1.0.1",
+    "pymupdf>=1.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.4.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
