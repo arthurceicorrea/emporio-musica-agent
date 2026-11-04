@@ -6,7 +6,7 @@ import re
 from typing import Any
 
 from src.rag.ingest_pdf import (
-     _strip_accents,
+    _strip_accents,
     get_chroma_collection,
     index_policies_to_chroma,
 )
@@ -104,8 +104,5 @@ def retrieve_policy_context(query: str, top_k: int = 4) -> str:
             f"--- Seção {item['section_id']} ({item['section_title']}) | "
             f"Página {item['page_number']} ---"
         )
-        formatted_blocks.append(f"{header}
-{item['content']}")
-    return "
-
-".join(formatted_blocks)
+        formatted_blocks.append(f"{header}\n{item['content']}")
+    return "\n\n".join(formatted_blocks)

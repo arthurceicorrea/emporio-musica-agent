@@ -21,9 +21,8 @@ logger = logging.getLogger(__name__)
 
 COLLECTION_NAME = "emporio_store_policies"
 
-# Regex patterns for top-level sections (e.g., "1. Sobre a Empório da Música")
-# and subsections (e.g., "4.1 Direito de Arrependimento (Compras Online)")
-MAIN_SECTION_RE = re.compile(r"^(\d{1,2})\.\s+([A-ZÀ-Ú].+)$")
+# Top-level chapters (1 to 10) never contain colons (:), unlike numbered list steps in Section 7.2
+MAIN_SECTION_RE = re.compile(r"^(\d{1,2})\.\s+([A-ZÀ-Ú][^:]+)$")
 SUB_SECTION_RE = re.compile(r"^(\d{1,2}\.\d{1,2})\s+([A-ZÀ-Ú].+)$")
 
 
@@ -155,16 +154,14 @@ def extract_policy_chunks(pdf_path: Path | None = None) -> list[PolicyChunk]:
     def flush_buffer() -> None:
         if not buffer:
             return
-        body = "
-".join(buffer).strip()
+        body = "\n".join(buffer).strip()
         if not body:
             buffer.clear()
             return
         chunk_index = len(chunks) + 1
         chunk_id = f"policy_sec_{current_section_id.replace('.', '_')}_{chunk_index:02d}"
         formatted_content = (
-            f"[{current_parent_title} > {current_section_id} {current_section_title}]
-{body}"
+            f"[{current_parent_title} > {current_section_id} {current_section_title}]\n{body}"
         )
         chunks.append(
             PolicyChunk(
@@ -186,14 +183,14 @@ def extract_policy_chunks(pdf_path: Path | None = None) -> list[PolicyChunk]:
             main_match = MAIN_SECTION_RE.match(line)
             sub_match = SUB_SECTION_RE.match(line)
 
-            if main_match:
+            if main_match and int(main_match.group(1)) == int(current_parent_id) + 1:
                 flush_buffer()
                 current_parent_id = main_match.group(1)
                 current_parent_title = f"{current_parent_id}. {main_match.group(2).strip()}"
                 current_section_id = f"{current_parent_id}.0"
                 current_section_title = main_match.group(2).strip()
                 current_page = page_num
-            elif sub_match:
+            elif sub_match and sub_match.group(1).startswith(f"{current_parent_id}."):
                 flush_buffer()
                 current_section_id = sub_match.group(1)
                 current_section_title = sub_match.group(2).strip()

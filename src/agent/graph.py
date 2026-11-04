@@ -69,8 +69,7 @@ def _extract_text_content(content: Any) -> str:
                 parts.append(item)
             elif isinstance(item, dict) and "text" in item:
                 parts.append(str(item["text"]))
-        return "
-".join(parts).strip()
+        return "\n".join(parts).strip()
     return str(content)
 
 

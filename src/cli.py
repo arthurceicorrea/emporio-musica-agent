@@ -39,10 +39,8 @@ def main() -> None:
     print("Comandos: '/novo' para reiniciar sessão | '/sair' ou 'exit' para encerrar.")
     print("=" * 72)
     print(
-        "
-Assistente: Olá! 🎶 Bem-vindo(a) à Empório da Música! "
-        "Como posso te ajudar com instrumentos musicais, pedidos ou dúvidas hoje?
-"
+        "\nAssistente: Olá! 🎶 Bem-vindo(a) à Empório da Música! "
+        "Como posso te ajudar com instrumentos musicais, pedidos ou dúvidas hoje?\n"
     )
 
     thread_id = args.thread_id
@@ -50,8 +48,7 @@ Assistente: Olá! 🎶 Bem-vindo(a) à Empório da Música! "
         try:
             user_input = input("Cliente: ").strip()
         except (EOFError, KeyboardInterrupt):
-            print("
-Encerrando atendimento. Até logo! 🎶")
+            print("\nEncerrando atendimento. Até logo! 🎶")
             break
 
         if not user_input:
@@ -63,22 +60,17 @@ Encerrando atendimento. Até logo! 🎶")
 
         if user_input.lower() in {"/novo", "/reset", "reset"}:
             thread_id = f"cli-{uuid.uuid4().hex[:8]}"
-            print(f"
-[Nova sessão iniciada: {thread_id}]
-")
+            print(f"\n[Nova sessão iniciada: {thread_id}]\n")
             continue
 
         turn = run_agent_turn(user_message=user_input, thread_id=thread_id, graph=graph)
 
         if args.show_tools and turn.get("tool_traces"):
-            print("
-  [Ferramentas Acionadas]:")
+            print("\n  [Ferramentas Acionadas]:")
             for trace in turn["tool_traces"]:
                 print(f"   -> {trace.get('tool_name')}({trace.get('args')})")
 
-        print(f"
-Assistente: {turn['reply']}
-")
+        print(f"\nAssistente: {turn['reply']}\n")
 
 
 if __name__ == "__main__":
